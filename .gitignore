@@ -1,0 +1,16 @@
+# Ambientes virtuais
+.venv/
+env/
+venv/
+venv/bin/
+
+# Cache do Python (arquivos que o Python gera sozinho)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Arquivos de sistema/Editor
+.vscode/
+.DS_Store
+Thumbs.db
