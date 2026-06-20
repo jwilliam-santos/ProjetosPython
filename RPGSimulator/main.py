@@ -9,7 +9,7 @@ print("Olá jogador, nesse maravilhoso mundo você, é o dono da historia, mas a
 
 vida_max = 100
 vida_max_com_boost = 220
-Peso_Max = 50     # VERIFICAR SE PASSOU DOS 50KG,
+Peso_Max = 50     
 pode_colocar_item = True
 idade = input("Me informe sua Idade por favor:\n")
 nome = input("Qual o seu nome?\n")
@@ -20,24 +20,20 @@ print("Você ganhou uma espada de cobre, uma mochila é uma armadura")
 print("Mas infelizmente você so aguenta carregar 50Kg no total e sua vida é 100, sua defesa inicial e 5, para aumenta-la presica de uma armadura")
 
 print("A defesa diminui o Dano tomado em número, por exemplo com 5 de defesa em vez de levar 10 de ataque, levaria 5")
-#Função de Inventário: Adicionar item checando peso (< 50Kg) e usar item de cura. FALTA USAR ITEM DE CURA
-#Loop de Combate: Criar um 'while' (enquanto vida de ambos > 0) com menu de ações. FEITO
-#IA dos Monstros: Criar regras condicionais ( Orc cura, Grakos carrega ataque).
-#Save/Load: Funções com o módulo 'json' para salvar e carregar o progresso num arquivo. COMPLETO
 Inventario = []
 Jogador = {
     "nome" : nome,
     "idade": idade,
     "vida" : 100,
     "vida_max": 100,
-    "defesa": 5,
-    "Peso" : 20,  #SOMAR PESO COM O INVENTARIO, Dano também
-    "dano": 15,    
+    "defesa": 5*2,
+    "Peso" : 0,  
+    "dano": 15*2,    
     "mochila": Inventario
 }
 if carregar == "0":
     arquivocarregar = input("Digite o nome do arquivo json para carrega-lo (como .json)").strip()
-    with open(arquivocarregar,"r") as f:#PRONTO
+    with open(arquivocarregar,"r") as f:
         try:
             Jogador = json.load(f)
         except FileNotFoundError:
@@ -55,7 +51,7 @@ def verificar_peso(item):
         print("O jogador não pode colocar mais nada no inventario")
         pode_colocar_item = False
 
-def exibir_status_jogador():#PRONTO
+def exibir_status_jogador():
     print("\n--- STATUS DO JOGADOR ---")
     print(f"Nome: {Jogador['nome']}")
     print(f"Idade: {Jogador['idade']} anos")
@@ -82,7 +78,7 @@ def procurar_itens():
 
 def escolha_atacar():
     print("Para escolhar qual irá atacar, digite:\n1-) Atacar Goblin\n2-)Atacar Orc\n3-) Atacar Golem")
-    escolhad_ataque = input("Eai, Vai escolher qual?")
+    escolhad_ataque = input("Eai, Vai escolher qual?").strip().lower()
     if escolhad_ataque == "1":
         Inimigo = Goblin["nome"]
         vida = Goblin["vida"]
@@ -98,6 +94,37 @@ def escolha_atacar():
         vida = Golem["vida"]
         dano = Golem["dano"]            
         defesa = Golem["defesa"]
+   
+    while Jogador["vida"] > 0 and vida > 0:
+        
+
+        dano_no_monstro = Jogador["dano"] - defesa
+        if dano_no_monstro < 1: 
+            dano_no_monstro = 1
+            
+        vida -= dano_no_monstro  
+        print(f"Você atacou o {Inimigo} e causou {dano_no_monstro} de dano!")
+        print(f"Vida restante do {Inimigo}: {vida}")
+        print("-----------------------------------")
+        
+       
+        if vida <= 0:
+            print(f"O {Inimigo} morreu! Vitória!")
+            break
+            
+      
+        dano_no_jogador = dano - Jogador["defesa"]
+        if dano_no_jogador < 1:  
+            dano_no_jogador = 1
+            
+        Jogador["vida"] -= dano_no_jogador  
+        print(f"O {Inimigo} te atacou e causou {dano_no_jogador} de dano!")
+        print(f"Sua vida restante: {Jogador['vida']}")
+        print("===================================\n")
+
+        if Jogador["vida"] <= 0:
+            print("É... ASSIM QUE TU MORREU! F no chat.")
+            break
     
 def usar_consumivel():
     for c in Jogador["mochila"]:
@@ -124,17 +151,17 @@ def descartar():
             else: 
                 print("Nada foi descartado")
 
-#LOOP WHILE DO JOGO
+
 while Jogador["vida"] > 0:
-    #=========================MENU DE OPÇÕES=================================
+
     print("\n\n\n")
     print("Para escolher você pode\n")
-    print("1-)Atacar o Goblin Orc ou Golem\n") # FALTA ISSO
-    print("2-)Olhar seu Inventario\n")#PRONTO
-    print("3-)Procurar Itens\n") #PRONTO
-    print("4-)Salvar O jogo é sair\n") #PRONTO
-    print("5-)Sair sem salvar\n")#PRONTO
-    print("6-)Mostrar estatisticas\n")#PRONTO
+    print("1-)Atacar o Goblin Orc ou Golem\n") 
+    print("2-)Olhar seu Inventario\n")
+    print("3-)Procurar Itens\n") 
+    print("4-)Salvar O jogo é sair\n") 
+    print("5-)Sair sem salvar\n")
+    print("6-)Mostrar estatisticas\n")#
     print("7-)Usar algum consumível de seu inventario\n")
     print("8-)Retirar item do inventario (descarta-lo)\n")
     
@@ -147,24 +174,24 @@ while Jogador["vida"] > 0:
         if escolha_ataque == "1":
             escolha_atacar()
 
-    elif opção == "2":#PRONTO
+    elif opção == "2":
         print(f"Seu Inventario é {Jogador["mochila"]}")
     
     elif opção == "3":
         procurar_itens()
 
-    elif opção == "4": #PRONTO
+    elif opção == "4": 
         arquivo = input("Digite o nome do arquivo que vai querer salvar, com extensão .json no final")
         with open(arquivo,"w") as f:
             json.dump(Jogador,f,indent=4)
         print("Tchau, até a proxíma")
         break
 
-    elif opção == "5":#PRONTO
+    elif opção == "5":
         print("Tchau,ate a proxíma")
         break
 
-    elif opção == "6":#PRONTO
+    elif opção == "6":
         exibir_status_jogador()
     
     elif opção == "7":
