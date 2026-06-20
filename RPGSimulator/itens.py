@@ -1,4 +1,5 @@
 #Aqui vai ficar o Dic com os itens
+
 itens_jogo = {
     # --- ITENS DE CURA ---
     "pocao_pequena": {
@@ -57,3 +58,11 @@ itens_jogo = {
         "defesa": 25
     }
 }
+itens_cura = []
+for item in itens_jogo.values():
+    if item["tipo"] == "Consumível":
+        itens_cura.append(item["nome"])
+itens_padrao = []
+for item in itens_jogo.values():
+    if item["tipo"] in ["Arma", "Armadura","Escudo"]:
+        itens_padrao.append(item["nome"])

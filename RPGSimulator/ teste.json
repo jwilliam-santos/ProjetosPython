@@ -1,0 +1,9 @@
+{
+    "nome": "MAGO",
+    "idade": 16,
+    "vida": 100,
+    "defesa": 5,
+    "Peso": 20,
+    "dano": 15,
+    "mochila": []
+}
