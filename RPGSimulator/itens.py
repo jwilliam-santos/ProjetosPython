@@ -23,12 +23,14 @@ itens_jogo = {
         "peso": 5.0,
         "tipo": "DROP BOSS",
         "cura": 120,
-        "vida_max": 220
+        "vida_max": 220,
+        "defesa":0,
+        "dano":0,
     },
 
     # --- ITENS PADRÃO (Equipamentos) ---
-    "espada_Couro": {
-        "nome": "Espada de Cobre",
+    "Espada_Ferro": {
+        "nome": "Espada de Ferro",
         "peso": 4.0,
         "tipo": "Arma",
         "dano": 8,

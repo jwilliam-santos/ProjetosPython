@@ -4,30 +4,22 @@ import time
 import json
 from itens import itens_jogo, itens_padrao
 from database import Goblin, Orc, Golem
+print("Se tiver um save e quiser carrega-lo aperte enter no nome e idade")
+print("Olá jogador, nesse maravilhoso mundo você, é o dono da historia, mas antes me diga algumas informações")
 
-carregar = input("Se você tiver um save e quiser carrega-lo digite 0, se não aperte enter.").strip()
-if carregar == "0":
-    arquivocarregar = input("Digite o nome do arquivo json para carrega-lo (como .json)")
-    with open(arquivocarregar,"r") as f:#PRONTO
-        try:
-            Jogador = json.load(f)
-        except FileNotFoundError:
-            print("Save não encontrado")
-else:
-    print("Olá jogador, nesse maravilhoso mundo você, é o dono da historia, mas antes me diga algumas informações")
-    nome = input("Qual o seu nome?\n")
-    idade = int(input("Me informe sua Idade por favor:\n"))
-    print(f"Olá {nome} ganhou uma espada de cobre, uma mochila é uma armadura")
-    print("Mas infelizmente você so aguenta carregar 50Kg no total e sua vida é 100, sua defesa inicial e 5, para aumenta-la presica de uma armadura")
-    print("A defesa diminui o Dano tomado em número, por exemplo com 5 de defesa em vez de levar 10 de ataque, levaria 5")
-#time.sleep(2)
 vida_max = 100
 vida_max_com_boost = 220
 Peso_Max = 50     # VERIFICAR SE PASSOU DOS 50KG,
 pode_colocar_item = True
+idade = input("Me informe sua Idade por favor:\n")
+nome = input("Qual o seu nome?\n")
+carregar = input("Se você tiver um save e quiser carrega-lo digite 0, se não aperte enter.").strip()
 
-#time.sleep(3)
-#time.sleep(1)
+print("Você ganhou uma espada de cobre, uma mochila é uma armadura")
+
+print("Mas infelizmente você so aguenta carregar 50Kg no total e sua vida é 100, sua defesa inicial e 5, para aumenta-la presica de uma armadura")
+
+print("A defesa diminui o Dano tomado em número, por exemplo com 5 de defesa em vez de levar 10 de ataque, levaria 5")
 #Função de Inventário: Adicionar item checando peso (< 50Kg) e usar item de cura. FALTA USAR ITEM DE CURA
 #Loop de Combate: Criar um 'while' (enquanto vida de ambos > 0) com menu de ações. FEITO
 #IA dos Monstros: Criar regras condicionais ( Orc cura, Grakos carrega ataque).
@@ -44,12 +36,14 @@ Jogador = {
     "mochila": Inventario
 }
 if carregar == "0":
-    arquivocarregar = input("Digite o nome do arquivo json para carrega-lo (como .json)")
+    arquivocarregar = input("Digite o nome do arquivo json para carrega-lo (como .json)").strip()
     with open(arquivocarregar,"r") as f:#PRONTO
         try:
             Jogador = json.load(f)
         except FileNotFoundError:
             print("Save não encontrado")
+        except Exception as e:
+            print("houve um erro {e}")
 
     
 def verificar_peso(item): 
@@ -82,7 +76,7 @@ def procurar_itens():
         Jogador["Peso"] += item_final["peso"]
         Jogador["dano"] += item_final["dano"]
         Jogador["defesa"] += item_final["defesa"]
-        print("O Item esta no seu aniversario e equipado")
+        print("O Item esta no seu Inventario e equipado")
     elif pode_colocar_item == False:
         print("O item não foi adicionado ao seu inventario ")    
 
@@ -94,7 +88,17 @@ def escolha_atacar():
         vida = Goblin["vida"]
         dano = Goblin["dano"]            
         defesa = Goblin["defesa"]
-
+    elif escolhad_ataque == "2":
+        Inimigo = Orc["nome"]
+        vida = Orc["vida"]
+        dano = Orc["dano"]            
+        defesa = Orc["defesa"]
+    elif escolhad_ataque == "3":
+        Inimigo = Golem["nome"]
+        vida = Golem["vida"]
+        dano = Golem["dano"]            
+        defesa = Golem["defesa"]
+    
 def usar_consumivel():
     for c in Jogador["mochila"]:
         if c["tipo"] == "Consumível":
@@ -107,17 +111,17 @@ def usar_consumivel():
                 print("Nada foi usado nem alterado")
 
 def descartar():
+    
     print("descartar um item é uma escolha permanente, tem certeza?")
     for c in Jogador["mochila"]:
-        if c["tipo"] == "Consumível":
-            confirmar = input("Quer descartar o item {c} Digite 's' se sim\n").strip().lower
+        
+            confirmar = input(f"Quer descartar o item {c} Digite 's' se sim\n").strip().lower()
             if confirmar == "s":
                 Jogador["Peso"] -= c["peso"]
                 Jogador["mochila"].remove(c)
                 print(f"O Item {c} foi Descartado")
-                if Jogador["vida"] > Jogador["vida_max"]:
-                    Jogador["vida"] = Jogador["vida_max"]
-            else:
+                break
+            else: 
                 print("Nada foi descartado")
 
 #LOOP WHILE DO JOGO
